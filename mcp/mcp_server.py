@@ -13,10 +13,11 @@ import time
 
 time.sleep(5)
 host = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-
+DB_PORT = 5432
+print(f"Connecting to PostgreSQL at {host}:{DB_PORT}...")
 
 # Connexion à la base de données PostgreSQL
+
 
 MCP_PORT = int(os.getenv("MCP_PORT", "5001"))
 time.sleep(6)
@@ -39,7 +40,7 @@ async def app_lifespan(_: FastMCP) -> AsyncIterator[AppContext]:
     user="postgres",
     password="3Gy5uwht4*",
     host=host,  
-    port="DB_PORT"
+    port=DB_PORT
     )
     yield AppContext(conn=conn)
     conn.close()
