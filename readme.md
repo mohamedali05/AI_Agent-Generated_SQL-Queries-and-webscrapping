@@ -1,7 +1,7 @@
 # Project Setup Guide
 
 This project utilizes [n8n](https://n8n.io), a powerful workflow automation tool. It creates an AI agent capable of scrapping data from a [sample faq website](https://www.motivi.com/fr_FR/faq) open to web-scrapping and accessing a Postgres database through an MCP server.
-The system employs a modular architecture using a sub-workflow in n8n to generate and process SQL queries dynamically through an AI agent. This agent is database-agnostic—you can adapt it to any schema by customizing its system prompt. The querying processes also  semantic search through full-text indexing when needed.
+The system generates and processes SQL queries dynamically through an AI agent. This agent is database-agnostic—you can adapt it to any schema by customizing its system prompt. The querying processes also semantic search through full-text indexing when needed.
 
 ## Prerequisites
 
@@ -45,24 +45,12 @@ This command will:
 - Create a persistent data volume for your workflows
 - Run the container interactively
 
-### step 3 : copy the sub-workflow : 
+### step 3: copy the workflow : 
 
 Once n8n is running:
 - Create a new workflow via the n8n interface.
 
-- Open the workflow_SQL_queries.json file in this repository.
-
-- Copy its content and paste it into the workflow editor.
-
-This workflow will communicate with the main worlflow when needed. 
-
-
-### step 4 : copy the main workflow : 
-
-Once n8n is running:
-- Create a new workflow via the n8n interface.
-
-- Open the Main_workflow.json file in this repository.
+- Open the workflow.json file in this repository.
 
 - Copy its content and paste it into the workflow editor.
 
@@ -86,7 +74,7 @@ To integrate with OpenAI services:
 1. Access your n8n instance at `http://localhost:5678`
 2. Follow the [official n8n OpenAI credentials documentation](https://docs.n8n.io/integrations/builtin/credentials/openai/)
 3. Add your OpenAI API key to establish the connection
-4. Connect the credentials in the OpenAI nodes for both workflows.
+4. Connect the credentials in the OpenAI node.
 
 ### Step 7: Configure Supabase Credentials
 

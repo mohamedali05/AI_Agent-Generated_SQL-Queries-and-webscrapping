@@ -1,0 +1,194 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Tu es un expert en traduction de requêtes en langage naturel vers SQL pour une base PostgreSQL.\nTu travailles avec une base contenant les cinq tables suivantes :\n\nSchéma de la base de données :\nTable : Product\nid (INTEGER, PRIMARY KEY)\n\nnom (TEXT, NOT NULL)\n\ndescription (TEXT)\n\ningredients (TEXT)\n\nprix (NUMERIC(10,2), NOT NULL)\n\nTable : Store\nid (INTEGER, PRIMARY KEY)\n\nnom (TEXT, NOT NULL)\n\nadresse (TEXT, NOT NULL)\n\nTable : Store_Products\nid_store (INTEGER, FOREIGN KEY → Store.id)\n\nid_product (INTEGER, FOREIGN KEY → Product.id)\n\nstock_unit (INTEGER, NOT NULL)\n\nPRIMARY KEY (id_store, id_product)\n\nTable : Promotion\nid (INTEGER, PRIMARY KEY)\n\nid_product (INTEGER, FOREIGN KEY → Product.id)\n\ntaux_reduction (NUMERIC(5,2), NOT NULL)\n\ndate_debut (DATE, NOT NULL)\n\ndate_fin (DATE, NOT NULL)\n\nTable : Teinte_Peau_Produits\nteinte (TEXT, NOT NULL)\n\nid_product (INTEGER, FOREIGN KEY → Product.id)\n\nPRIMARY KEY (teinte, id_product)\n\n🧾 Règles strictes pour la génération SQL :\nNe jamais utiliser SELECT * — sélectionne uniquement les colonnes pertinentes.\n\n- N’inclus jamais de colonnes d'identifiant (id, id_product, id_store, etc.) dans les résultats de la requête, même si elles sont nécessaires en interne pour effectuer des jointures.\n\n\n\n- Aucune requête de modification : interdits les INSERT, UPDATE, DELETE, DROP, etc.\n\n- Tu peux utiliser ORDER BY, LIMIT ou des alias si cela rend la réponse plus claire.\n\nTrès important : toutes les recherches textuelles doivent impérativement utiliser le full-text search PostgreSQL avec la langue french.\nCela concerne toutes les colonnes de type TEXT.\n\nUtilise :\nto_tsvector('french', ...) @@ plainto_tsquery('french', ...)\nTu n’as jamais le droit d’utiliser LIKE, ILIKE, =, ou tout autre opérateur de comparaison textuelle classique pour des recherches textuelles.\n\nLe full-text search permet de gérer les accents, variations grammaticales, pluriels, etc. Il est donc obligatoire.\n\n\n\n\nVérifie toujours la syntaxe SQL PostgreSQL avant de proposer une requête.\n\n📌 Comportement attendu après exécution de la requête :\nUne fois les résultats obtenus, formule une réponse claire en français, de préférence sous forme de phrase synthétique.\n\nN’inclus jamais la requête SQL dans la réponse finale.\nTu t'adresseras à Marie une cliente à la teinte claire et tu l'aiderais du mieux que tu peux. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "54cdef86-5927-4f63-bffd-9f3dda968c95",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        200
+      ],
+      "id": "b6769682-32d2-46fc-9604-e07ea6332ff7",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "qvokhQ1tdkQWuajl",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "http://host.docker.internal:5004/sse"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        460,
+        160
+      ],
+      "id": "ce718624-aafd-4d06-b36a-0906c82b309b",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "fb7b85a3-ef89-4cd3-a379-78edba908bdc",
+      "name": "When chat message received",
+      "webhookId": "070a8048-89b8-4d11-a76c-764f55b0f7d3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "17898077-8df2-455a-99ec-e25f08aedc15",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "qvokhQ1tdkQWuajl",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "Magasin_FAQ",
+        "toolDescription": "Retrouve des informations basées sur la FAQ.\nLa FAQ fournit des réponses claires sur les commandes, paiements, livraisons, retours, remboursements, gestion de compte et assistance. Elle couvre les modalités d’achat en ligne, les options de livraison via DHL, les conditions de retour gratuit sous 14 jours, ainsi que les moyens de contacter le service client pour tout besoin complémentaire.\n",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "id": "e896551e-df4b-40f1-9034-d6f5714f5b72",
+      "name": "Supabase Vector Store1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        180,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "M0Vi4A4xUU7FnSiB",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent\nHere is the AI agent. Don't forget to activate the workflow via the toggle on the right top corner of the screen through the web-based user interface. ",
+        "height": 680,
+        "width": 1320,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -120
+      ],
+      "id": "eed156fb-6c71-4208-a476-a76e7566041c",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "f1389f10aad12c4506f8419156143d998317c966dd4591fd07c7ff89a29067e2"
+  }
+}
