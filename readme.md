@@ -17,12 +17,12 @@ Before getting started, ensure you have the following installed on your system:
 First, clone the project repository to your local machine:
 
 ```bash
-git clone "https://github.com/mohamedali05/AI-Agent-using-a-database-and-a-web-scrapping-tool"
+git clone "https://github.com/mohamedali05/AI_Agent-Generated_SQL-Queries-and-webscrapping.git"
 ```
 
 
 ```bash
-cd AI-Agent-using-a-database-and-a-web-scrapping-tool
+cd AI_Agent-Generated_SQL-Queries-and-webscrapping.git
 ```
 
 
